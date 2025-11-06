@@ -56,16 +56,10 @@ header h1 {
 }
 
 main {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
     margin-bottom: 3rem;
-}
-
-@media (min-width: 768px) {
-    main {
-        grid-template-columns: 1fr 2fr;
-    }
 }
 
 .vote-section, .results-section {
@@ -99,71 +93,86 @@ h2::after {
     border-radius: 2px;
 }
 
-.color-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+.color-frames {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
-.color-picker-container {
+.color-frame {
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.5rem;
+    background: #e0e0e0;
+    box-shadow: var(--shadow);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 1.5rem;
 }
 
-input[type="color"] {
-    width: 120px;
-    height: 120px;
+.color-form {
+    margin: 0;
+}
+
+.color-button {
+    width: 100%;
+    height: 80px;
     border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    padding: 0;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-    border: 4px solid white;
-    outline: 2px solid var(--primary);
-}
-
-input[type="color"]:hover {
-    transform: scale(1.05);
-}
-
-input[type="color"]::-webkit-color-swatch-wrapper {
-    padding: 0;
-}
-
-input[type="color"]::-webkit-color-swatch {
-    border: none;
-    border-radius: 50%;
-}
-
-.vote-button {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 50px;
+    border-radius: 12px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
-.vote-button:hover {
-    background: #5D4FCF;
-    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
-    transform: translateY(-2px);
+.color-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
 
-.vote-button:active {
+.color-button:active {
     transform: translateY(0);
 }
+
+.color-button.red {
+    background-color: #ff0000;
+}
+
+.color-button.yellow {
+    background-color: #ffff00;
+    color: #333;
+    text-shadow: none;
+}
+
+.color-button.green {
+    background-color: #00ff00;
+    color: #333;
+    text-shadow: none;
+}
+
+.color-button.blue {
+    background-color: #0000ff;
+}
+
+.color-button.black {
+    background-color: #000000;
+}
+
+.color-button.white {
+    background-color: #ffffff;
+    color: #333;
+    border: 2px solid #ddd;
+    text-shadow: none;
+}
+
+
 
 .results-container {
     display: flex;
@@ -252,25 +261,29 @@ input[type="color"]::-webkit-color-swatch {
         padding: 1.5rem;
         margin: 1.5rem 0;
     }
-    
+
     header h1 {
         font-size: 2rem;
     }
-    
+
     .subtitle {
         font-size: 1rem;
     }
-    
+
     .vote-section, .results-section {
         padding: 1.5rem;
     }
-    
+
+    .color-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .color-result {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
     }
-    
+
     .color-swatch {
         width: 50px;
         height: 50px;

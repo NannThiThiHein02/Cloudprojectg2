@@ -12,18 +12,48 @@
             <h1>Color Vote</h1>
             <p class="subtitle">Choose your favorite color and see real-time results</p>
         </header>
-        
+
         <main>
-            <section class="vote-section">
-                <h2>Cast Your Vote</h2>
-                <form method="POST" class="color-form">
-                    <div class="color-picker-container">
-                        <input type="color" name="color" id="colorPicker" value="#ff0000">
-                        <label for="colorPicker">Select Color</label>
-                    </div>
-                    <button type="submit" class="vote-button">Vote Now</button>
-                </form>
-            </section>
+             <section class="vote-section">
+                 <div class="color-frames">
+                     <div class="color-frame">
+                         <form method="POST" class="color-form">
+                             <input type="hidden" name="color" value="#ff0000">
+                             <button type="submit" class="color-button red">Red</button>
+                         </form>
+                     </div>
+                     <div class="color-frame">
+                         <form method="POST" class="color-form">
+                             <input type="hidden" name="color" value="#ffff00">
+                             <button type="submit" class="color-button yellow">Yellow</button>
+                         </form>
+                     </div>
+                     <div class="color-frame">
+                         <form method="POST" class="color-form">
+                             <input type="hidden" name="color" value="#00ff00">
+                             <button type="submit" class="color-button green">Green</button>
+                         </form>
+                     </div>
+                     <div class="color-frame">
+                         <form method="POST" class="color-form">
+                             <input type="hidden" name="color" value="#0000ff">
+                             <button type="submit" class="color-button blue">Blue</button>
+                         </form>
+                     </div>
+                     <div class="color-frame">
+                         <form method="POST" class="color-form">
+                             <input type="hidden" name="color" value="#000000">
+                             <button type="submit" class="color-button black">Black</button>
+                         </form>
+                     </div>
+                     <div class="color-frame">
+                         <form method="POST" class="color-form">
+                             <input type="hidden" name="color" value="#ffffff">
+                             <button type="submit" class="color-button white">White</button>
+                         </form>
+                     </div>
+                 </div>
+              </section>
             
             <section class="results-section">
                 <h2>Live Results</h2>
@@ -45,8 +75,9 @@
                         <p class="no-votes">No votes yet! Be the first to vote.</p>
                     {% endif %}
                 </div>
-            </section>
-        </main>
-    </div>
-</body>
-</html>
+             </section>
+         </main>
+     </div>
+
+ </body>
+ </html>
