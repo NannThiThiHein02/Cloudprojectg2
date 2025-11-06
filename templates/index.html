@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ColorVote - Pick Your Favorite</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Color Vote</h1>
+            <p class="subtitle">Choose your favorite color and see real-time results</p>
+        </header>
+        
+        <main>
+            <section class="vote-section">
+                <h2>Cast Your Vote</h2>
+                <form method="POST" class="color-form">
+                    <div class="color-picker-container">
+                        <input type="color" name="color" id="colorPicker" value="#ff0000">
+                        <label for="colorPicker">Select Color</label>
+                    </div>
+                    <button type="submit" class="vote-button">Vote Now</button>
+                </form>
+            </section>
+            
+            <section class="results-section">
+                <h2>Live Results</h2>
+                <div class="results-container">
+                    {% if votes %}
+                        {% for color, score in votes %}
+                        <div class="color-result">
+                            <div class="color-swatch" style="background-color: {{ color }};"></div>
+                            <div class="color-info">
+                                <span class="color-hex">{{ color }}</span>
+                                <div class="vote-bar" style="width: {{ (score / total_votes * 100)|round(1) }}%;">
+                                    <span class="vote-count">{{ score|int }} votes</span>
+                                </div>
+                                <span class="vote-percent">{{ (score / total_votes * 100)|round(1) }}%</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-votes">No votes yet! Be the first to vote.</p>
+                    {% endif %}
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
