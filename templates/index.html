@@ -3,81 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ColorVote - Pick Your Favorite</title>
+    <title>Color Voting System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Color Vote</h1>
-            <p class="subtitle">Choose your favorite color and see real-time results</p>
-        </header>
+        <h1 class="title">Color Voting System</h1>
 
-        <main>
-             <section class="vote-section">
-                 <div class="color-frames">
-                     <div class="color-frame">
-                         <form method="POST" class="color-form">
-                             <input type="hidden" name="color" value="#ff0000">
-                             <button type="submit" class="color-button red">Red</button>
-                         </form>
-                     </div>
-                     <div class="color-frame">
-                         <form method="POST" class="color-form">
-                             <input type="hidden" name="color" value="#ffff00">
-                             <button type="submit" class="color-button yellow">Yellow</button>
-                         </form>
-                     </div>
-                     <div class="color-frame">
-                         <form method="POST" class="color-form">
-                             <input type="hidden" name="color" value="#00ff00">
-                             <button type="submit" class="color-button green">Green</button>
-                         </form>
-                     </div>
-                     <div class="color-frame">
-                         <form method="POST" class="color-form">
-                             <input type="hidden" name="color" value="#0000ff">
-                             <button type="submit" class="color-button blue">Blue</button>
-                         </form>
-                     </div>
-                     <div class="color-frame">
-                         <form method="POST" class="color-form">
-                             <input type="hidden" name="color" value="#000000">
-                             <button type="submit" class="color-button black">Black</button>
-                         </form>
-                     </div>
-                     <div class="color-frame">
-                         <form method="POST" class="color-form">
-                             <input type="hidden" name="color" value="#ffffff">
-                             <button type="submit" class="color-button white">White</button>
-                         </form>
-                     </div>
-                 </div>
-              </section>
-            
-            <section class="results-section">
-                <h2>Live Results</h2>
-                <div class="results-container">
-                    {% if votes %}
-                        {% for color, score in votes %}
-                        <div class="color-result">
-                            <div class="color-swatch" style="background-color: {{ color }};"></div>
-                            <div class="color-info">
-                                <span class="color-hex">{{ color }}</span>
-                                <div class="vote-bar" style="width: {{ (score / total_votes * 100)|round(1) }}%;">
-                                    <span class="vote-count">{{ score|int }} votes</span>
-                                </div>
-                                <span class="vote-percent">{{ (score / total_votes * 100)|round(1) }}%</span>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p class="no-votes">No votes yet! Be the first to vote.</p>
-                    {% endif %}
+        <div class="color-grid">
+            {% for color in colors %}
+            <div class="color-card">
+                <div class="color-circle" style="background-color: {{ color.hex }};"></div>
+                <h2 class="color-name">{{ color.name }}</h2>
+                <p class="vote-count">Votes: {{ votes.get(color.name, 0) }}</p >
+                <form method="POST" action="/vote">
+                    <input type="hidden" name="color_name" value="{{ color.name }}">
+                    <button type="submit" class="vote-button">Vote</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="results-section">
+            <h2 class="results-title">Results</h2>
+            <p class="total-votes">Total Votes: {{ total_votes }}</p >
+            <div class="results-list">
+                {% for color in colors %}
+                <div class="result-item">
+                    <span class="color-label">{{ color.name }}:</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ percentages.get(color.name, 0) }}%; background-color: {{ color.hex }};"></div>
+                    </div>
+                    <span class="result-count">
+                        {{ votes.get(color.name, 0) }} ({{ percentages.get(color.name, 0) }}%)
+                    </span>
                 </div>
-             </section>
-         </main>
-     </div>
-
- </body>
- </html>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,68 +1,62 @@
-from flask import Flask, render_template, request
-import redis
+from flask import Flask, render_template, request, redirect, url_for, session
+import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)  # For session management
 
-def get_redis_connection():
-    try:
-        r = redis.Redis(
-            host='redis-service',
-            port=6379,
-            db=0,
-            socket_timeout=5,
-            socket_connect_timeout=5
-        )
-        r.ping()  # Test the connection
-        return r
-    except redis.RedisError:
-        # Fallback to local Redis for development
-        try:
-            r = redis.Redis(
-                host='localhost',
-                port=6379,
-                db=0,
-                socket_timeout=5,
-                socket_connect_timeout=5
-            )
-            r.ping()
-            return r
-        except redis.RedisError:
-            return None
+# Color data
+COLORS = [
+    {"name": "Red", "hex": "#FF0000"},
+    {"name": "Blue", "hex": "#0000FF"},
+    {"name": "Green", "hex": "#00FF00"},
+    {"name": "Yellow", "hex": "#FFFF00"},
+    {"name": "Purple", "hex": "#800080"},
+    {"name": "Primary", "hex": "#4F46E5"},
+]
 
-r = get_redis_connection()
+def initialize_votes():
+    """Initialize votes in session if not present"""
+    if 'votes' not in session:
+        session['votes'] = {}
 
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    if request.method == 'POST':
-        color = request.form.get('color', '#ff0000')
-        if r:
-            try:
-                r.zincrby('color_votes', 1, color)
-            except redis.RedisError as e:
-                app.logger.error(f"Redis error: {str(e)}")
+    """Main page displaying colors and voting results"""
+    initialize_votes()
+    
+    # Calculate total votes and percentages
+    votes = session.get('votes', {})
+    total_votes = sum(votes.values()) if votes else 0
+    
+    percentages = {}
+    for color in COLORS:
+        color_name = color['name']
+        vote_count = votes.get(color_name, 0)
+        percentage = round((vote_count / total_votes) * 100, 1) if total_votes > 0 else 0
+        percentages[color_name] = percentage
+    
+    return render_template(
+        'index.html',
+        colors=COLORS,
+        votes=votes,
+        total_votes=total_votes,
+        percentages=percentages
+    )
 
-    votes = []
-    if r:
-        try:
-            votes = r.zrange('color_votes', 0, -1, desc=True, withscores=True)
-        except redis.RedisError as e:
-            app.logger.error(f"Redis error: {str(e)}")
-
-    total_votes = sum(score for _, score in votes) if votes else 0
-    return render_template('index.html', votes=votes, total_votes=total_votes)
-
-@app.route('/health')
-def health():
-    if r:
-        try:
-            r.ping()
-            return 'OK', 200
-        except redis.RedisError as e:
-            app.logger.error(f"Health check failed: {str(e)}")
-            return 'Redis unavailable', 503
-    else:
-        return 'Redis unavailable', 503
+@app.route('/vote', methods=['POST'])
+def vote():
+    """Handle voting for a color"""
+    color_name = request.form.get('color_name')
+    
+    if color_name:
+        initialize_votes()
+        votes = session.get('votes', {})
+        
+        # Increment vote count for the selected color
+        votes[color_name] = votes.get(color_name, 0) + 1
+        session['votes'] = votes
+    
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(debug=True)
